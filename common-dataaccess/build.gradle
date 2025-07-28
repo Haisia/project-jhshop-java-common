@@ -1,0 +1,44 @@
+plugins {
+  id 'java-library'
+  id 'org.springframework.boot' version "${springBootVersion}"
+  id 'io.spring.dependency-management' version "${springDependencyManagementVersion}"
+}
+
+java {
+  toolchain {
+    languageVersion = JavaLanguageVersion.of("${javaVersion}")
+  }
+}
+
+dependencyManagement {
+  imports {
+    mavenBom "org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion"
+  }
+}
+
+dependencies {
+  api project(":common-domain")
+
+  api "org.springframework.boot:spring-boot-starter-data-jpa"
+  api "org.postgresql:postgresql"
+  implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+  implementation "io.hypersistence:hypersistence-utils-hibernate-63:$hypersistenceUtilsHibernateVersion"
+
+  //  ===
+
+  compileOnly "org.projectlombok:lombok:$lombokVersion"
+  annotationProcessor "org.projectlombok:lombok:$lombokVersion"
+
+  testImplementation "org.springframework.boot:spring-boot-starter-test"
+  testImplementation "org.mockito:mockito-core:$mockitoVersion"
+}
+
+configurations {
+  compileOnly {
+    extendsFrom annotationProcessor
+  }
+}
+
+tasks.named('test') {
+  useJUnitPlatform()
+}
